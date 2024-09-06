@@ -143,19 +143,30 @@ public class Model extends Observable {
         return index >= 0 && index < size;
     }
 
-    public Tile getTile(int col, int row) {
-        if (checkIndex(col) && checkIndex((row))) {
-            return board.tile(col, row);
+    public Tile getTileBySide(int c, int r, Side s) {
+        if (!checkIndex(c) || !checkIndex(r)) {
+            return null;
         }
-        return null;
+        if (s == Side.NORTH || s == Side.SOUTH) {
+            return board.tile(c, r);
+        }
+        return board.tile(r, c);
     }
 
-    public boolean compareBySide(int dir, int i) {
+    public boolean compareByDir(int dir, int i) {
         int size = board.size();
         if (dir == -1) {
             return i >= 0;
         }
         return i < size;
+    }
+
+    public int getInitialValByDir(int dir) {
+
+        if (dir == -1) {
+            return board.size() - 1;
+        }
+        return 0;
     }
 
     public int getDirFlagBySide(Side s) {
@@ -165,110 +176,46 @@ public class Model extends Observable {
         return 1;
     }
 
-    public int moveTileUp(int col, int row, Tile current, boolean allowMerge) {
+    public boolean moveTileByCoordinate(int c, int r, Tile t, Side s) {
+        if (s == Side.NORTH || s == Side.SOUTH) {
+            return board.move(c, r, t);
+        }
+        return board.move(r, c, t);
+    }
+
+    public int moveTile(int fixedIndex, int variableIndex, Tile current, Side s, boolean allowMerge) {
+        /**
+         *
+         * @return 1 means the merge operation happen, 2 means move to a empty space ,
+         *  0 means nothing is changed.
+         */
+        int dir = getDirFlagBySide(s);
         int size = board.size();
-        int i = row + 1;
-        while (i < size) {
-            Tile t = board.tile(col, i);
+        int i = variableIndex + -dir;
+        while (compareByDir(-dir, i)) {
+            Tile t = getTileBySide(fixedIndex, i, s);
             if (t != null) {
                 if (t.value() == current.value() && allowMerge) {
-                    board.move(col, i, current);
+                    moveTileByCoordinate(fixedIndex, i, current, s);
                     score += current.value() * 2;
                     return 1;
-                } else if (i - row > 1) {
-                    board.move(col, i - 1, current);
+                } else if (Math.abs(i - variableIndex) > 1) {
+                    moveTileByCoordinate(fixedIndex, i + dir, current, s);
                     return 2;
                 }
                 return 0;
             }
-            i += 1;
+            i += -dir;
         }
-        i = i - 1;
-        if (i != row && checkIndex(i)) {
-            board.move(col, i, current);
+        i = i + dir;
+        if (i != variableIndex && checkIndex(i)) {
+            moveTileByCoordinate(fixedIndex, i, current, s);
             return 2;
         } else {
             return 0;
         }
     }
 
-    public int moveTileRight(int col, int row, Tile current, boolean allowMerge) {
-        int size = board.size();
-        int i = col + 1;
-        while (i < size) {
-            Tile t = board.tile(i, row);
-            if (t != null) {
-                if (t.value() == current.value() && allowMerge) {
-                    board.move(i, row, current);
-                    score += current.value() * 2;
-                    return 1;
-                } else if (i - col > 1) {
-                    board.move(i - 1, row, current);
-                    return 2;
-                }
-                return 0;
-            }
-            i += 1;
-        }
-        i = i - 1;
-        if (i != col && checkIndex(i)) {
-            board.move(i, row, current);
-            return 2;
-        } else {
-            return 0;
-        }
-    }
-    public int moveTileDown(int col, int row, Tile current, boolean allowMerge) {
-        int size = board.size();
-        int i = row - 1;
-        while (i >= 0) {
-            Tile t = board.tile(col, i);
-            if (t != null) {
-                if (t.value() == current.value() && allowMerge) {
-                    board.move(col, i, current);
-                    score += current.value() * 2;
-                    return 1;
-                } else if (row - i > 1) {
-                    board.move(col, i + 1, current);
-                    return 2;
-                }
-                return 0;
-            }
-            i -= 1;
-        }
-        i = i + 1;
-        if (i != row && checkIndex(i)) {
-            board.move(col, i, current);
-            return 2;
-        } else {
-            return 0;
-        }
-    }
-    public int moveTileLeft(int col, int row, Tile current, boolean allowMerge) {
-        int i = col - 1;
-        while (i >= 0) {
-            Tile t = board.tile(i, row);
-            if (t != null) {
-                if (t.value() == current.value() && allowMerge) {
-                    board.move(i, row, current);
-                    score += current.value() * 2;
-                    return 1;
-                } else if (col - i > 1) {
-                    board.move(i + 1, row, current);
-                    return 2;
-                }
-                return 0;
-            }
-            i -= 1;
-        }
-        i = i + 1;
-        if (i != row && checkIndex(i)) {
-            board.move(i, row, current);
-            return 2;
-        } else {
-            return 0;
-        }
-    }
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
@@ -281,47 +228,12 @@ public class Model extends Observable {
         int size = board.size();
         for (int c = 0; c < size; c += 1) {
             int moveFlag = 0;
-            if (side == Side.NORTH) {
-                for (int r = size - 1; r >= 0; r -= 1) {
-                    Tile t = getTile(c, r);
-                    if (t != null) {
-                        moveFlag = moveTileUp(c, r, t, moveFlag != 1);
-                        if (moveFlag != 0) {
-                            changed = true;
-                        }
-                    }
-                }
-            }
-            if (side == Side.SOUTH) {
-                for (int r = 0; r < size; r += 1) {
-                    Tile t = getTile(c, r);
-                    if (t != null) {
-                        moveFlag = moveTileDown(c, r, t, moveFlag != 1);
-                        if (moveFlag != 0) {
-                            changed = true;
-                        }
-                    }
-                }
-            }
-            if (side == Side.WEST) {
-                for (int r = 0; r < size; r += 1) {
-                    Tile t = getTile(r,c);
-                    if (t != null) {
-                        moveFlag = moveTileLeft(r,c, t, moveFlag != 1);
-                        if (moveFlag != 0) {
-                            changed = true;
-                        }
-                    }
-                }
-            }
-            if (side == Side.EAST) {
-                for (int r = size - 1; r >= 0; r -= 1) {
-                    Tile t = getTile(r, c);
-                    if (t != null) {
-                        moveFlag = moveTileRight(r, c, t, moveFlag != 1);
-                        if (moveFlag != 0) {
-                            changed = true;
-                        }
+            for (int r = getInitialValByDir(dir); compareByDir(dir, r); r += dir) {
+                Tile t = getTileBySide(c, r, side);
+                if (t != null) {
+                    moveFlag = moveTile(c, r, t, side, moveFlag != 1);
+                    if (moveFlag != 0) {
+                        changed = true;
                     }
                 }
             }
@@ -333,6 +245,7 @@ public class Model extends Observable {
         }
         return changed;
     }
+
 
     /**
      * Checks if the game is over and sets the gameOver variable
@@ -394,14 +307,11 @@ public class Model extends Observable {
     public static boolean atLeastOneMoveExists(Board b) {
         // TODO: Fill in this function.
         int size = b.size();
-       boolean anyEmpty = emptySpaceExists(b);
-       if (anyEmpty) return true;
+        boolean anyEmpty = emptySpaceExists(b);
+        if (anyEmpty) return true;
         for (int col = 0; col < size; col += 1) {
             for (int row = 0; row < size; row += 1) {
                 Tile t = b.tile(col, row);
-                if (t == null) {
-                    return true;
-                }
                 int l = col - 1;
                 if (l >= 0 && t.value() == b.tile(l, row).value()) {
                     return true;
@@ -425,7 +335,7 @@ public class Model extends Observable {
 
 
     @Override
-    /** Returns the model as a string, used for debugging. */
+/** Returns the model as a string, used for debugging. */
     public String toString() {
         Formatter out = new Formatter();
         out.format("%n[%n");
@@ -445,7 +355,7 @@ public class Model extends Observable {
     }
 
     @Override
-    /** Returns whether two models are equal. */
+/** Returns whether two models are equal. */
     public boolean equals(Object o) {
         if (o == null) {
             return false;
@@ -457,7 +367,7 @@ public class Model extends Observable {
     }
 
     @Override
-    /** Returns hash code of Model’s string. */
+/** Returns hash code of Model’s string. */
     public int hashCode() {
         return toString().hashCode();
     }
