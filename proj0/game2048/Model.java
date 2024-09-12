@@ -186,7 +186,7 @@ public class Model extends Observable {
     public int moveTile(int fixedIndex, int variableIndex, Tile current, Side s, boolean allowMerge) {
         /**
          *
-         * @return 1 means the merge operation happen, 2 means move to a empty space ,
+         *  1 means the merge operation happen, 2 means move to a empty space ,
          *  0 means nothing is changed.
          */
         int dir = getDirFlagBySide(s);
@@ -219,11 +219,6 @@ public class Model extends Observable {
     public boolean tilt(Side side) {
         boolean changed;
         changed = false;
-
-        // TODO: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
-        //assume that the Size is equal to Side.north
         int dir = getDirFlagBySide(side);
         int size = board.size();
         for (int c = 0; c < size; c += 1) {
