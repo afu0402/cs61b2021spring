@@ -10,14 +10,14 @@ public class LinkedListDeque<T> {
     private ListNode sentinel;
     private int size;
 
-    LinkedListDeque() {
+    public LinkedListDeque() {
         sentinel = new ListNode(null);
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
         size = 0;
     }
 
-    LinkedListDeque(LinkedListDeque<T> other) {
+    public LinkedListDeque(LinkedListDeque<T> other) {
         sentinel = new ListNode(null);
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
