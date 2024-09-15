@@ -17,6 +17,16 @@ public class LinkedListDeque<T> {
         size = 0;
     }
 
+    LinkedListDeque(LinkedListDeque<T> other) {
+        sentinel = new ListNode(null);
+        sentinel.prev = sentinel;
+        sentinel.next = sentinel;
+        size = 0;
+        for (int i = 0; i < other.size(); i += 1) {
+            addLast(other.get(i));
+        }
+    }
+
     private class ListNode {
         public ListNode prev;
         T item;
@@ -55,8 +65,8 @@ public class LinkedListDeque<T> {
                 s += p.item;
             } else {
                 s += " " + p.item;
-                p = p.next;
             }
+            p = p.next;
         }
         System.out.println(s);
     }
