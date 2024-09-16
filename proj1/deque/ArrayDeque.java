@@ -1,8 +1,6 @@
 package deque;
 
-import java.util.Arrays;
-
-public class ArrayDeque<T> {
+public class ArrayDeque<T> implements Deque<T> {
     private T[] items;
     private int size;
     private int nextPrev = 0;
@@ -51,12 +49,12 @@ public class ArrayDeque<T> {
         nextLast = size;
     }
 
-    public boolean isEmpty() {
-        return size == 0;
-    }
 
     public T get(int i) {
-        return items[i];
+        if (i < 0 || i >= size) {
+            return null;
+        }
+        return items[(nextPrev + i + 1) % items.length];
     }
 
     public int size() {
@@ -73,7 +71,9 @@ public class ArrayDeque<T> {
     }
 
     public void printDeque() {
-        System.out.println(Arrays.toString(items));
+        for (int i = 0; i < size; i += 1) {
+            System.out.println(get(i) + " ");
+        }
     }
 
     public T removeLast() {
@@ -85,19 +85,4 @@ public class ArrayDeque<T> {
         return temp;
     }
 
-//    public static void main(String[] args) {
-//        ArrayDeque<String> a = new ArrayDeque<>(4);
-//        a.addFirst("a");
-//        a.addLast("1");
-//        a.addFirst("c");
-//        a.addLast("2");
-//        a.addLast("3");
-//        a.addLast("4");
-//        a.printDeque();
-//        int size = a.size();
-//        for (int i = 0; i < size; i += 1) {
-//            System.out.println(a.removeLast());
-//        }
-//        System.out.println("size：" + a.size());
-//    }
 }

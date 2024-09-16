@@ -4,7 +4,7 @@ import com.sun.tools.doclets.internal.toolkit.util.links.LinkInfo;
 
 import java.util.List;
 
-public class LinkedListDeque<T> {
+public class LinkedListDeque<T> implements Deque<T> {
 
     private ListNode node;
     private ListNode sentinel;
@@ -75,12 +75,6 @@ public class LinkedListDeque<T> {
         return size;
     }
 
-    public boolean isEmpty() {
-        if (sentinel.next == sentinel) {
-            return true;
-        }
-        return false;
-    }
 
     public T removeFirst() {
         ListNode firstItem = sentinel.next;
