@@ -55,7 +55,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
            if (size == items.length) {
                resize(items.length * 2);
            }
-       } else {
+       } else if (items.length > 8){
             double num = (double) size / items.length;
            if (num <= 0.25) {
                resize(items.length / 2);

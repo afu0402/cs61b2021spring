@@ -1,9 +1,5 @@
 package deque;
-
-import com.sun.tools.doclets.internal.toolkit.util.links.LinkInfo;
-
 import java.util.Iterator;
-import java.util.List;
 
 public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
 
@@ -164,5 +160,22 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
             return p.item;
         }
         return getRecursive(index - 1, p.next);
+    }
+
+    public boolean equals(Object o) {
+        if (o instanceof Deque) {
+            if (size != ((Deque<?>) o).size()) {
+                return false;
+            }
+            for (int i = 0; i < size; i += 1) {
+                T item = get(i);
+                if (!(item.equals(((Deque<?>) o).get(i)))) {
+
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
     }
 }
