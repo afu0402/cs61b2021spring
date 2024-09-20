@@ -1,16 +1,19 @@
 package deque;
+
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
+public class LinkedListDeque<T> implements Deque<T>, Iterable<T> {
 
     private ListNode sentinel;
     private int size;
+
     private class LinkedListIterator implements Iterator<T> {
         private ListNode node;
 
         LinkedListIterator() {
             node = sentinel;
         }
+
         @Override
         public boolean hasNext() {
             return node.next != sentinel;
@@ -23,6 +26,7 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
             return current.item;
         }
     }
+
     public Iterator<T> iterator() {
         return new LinkedListIterator();
     }
@@ -34,15 +38,15 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
         size = 0;
     }
 
-    public LinkedListDeque(LinkedListDeque<T> other) {
-        sentinel = new ListNode(null);
-        sentinel.prev = sentinel;
-        sentinel.next = sentinel;
-        size = 0;
-        for (int i = 0; i < other.size(); i += 1) {
-            addLast(other.get(i));
-        }
-    }
+//    public LinkedListDeque(LinkedListDeque<T> other) {
+//        sentinel = new ListNode(null);
+//        sentinel.prev = sentinel;
+//        sentinel.next = sentinel;
+//        size = 0;
+//        for (int i = 0; i < other.size(); i += 1) {
+//            addLast(other.get(i));
+//        }
+//    }
 
     private class ListNode {
         public ListNode prev;
@@ -53,7 +57,6 @@ public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
             item = value;
         }
     }
-
 
 
     @Override

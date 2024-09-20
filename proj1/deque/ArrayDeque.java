@@ -7,14 +7,17 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
     private int size;
     private int nextPrev = 0;
     private int nextLast = 1;
+
     private class ArrayDequeIterator implements Iterator<T> {
         private int pos;
+
         ArrayDequeIterator() {
             pos = 0;
         }
+
         @Override
         public boolean hasNext() {
-            return  pos < size;
+            return pos < size;
         }
 
         @Override
@@ -24,15 +27,12 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
             return item;
         }
     }
+
     public ArrayDeque() {
         items = (T[]) new Object[8];
         size = 0;
     }
 
-    public ArrayDeque(int numElement) {
-        items = (T[]) new Object[numElement];
-        size = 0;
-    }
     public Iterator<T> iterator() {
         return new ArrayDequeIterator();
     }
@@ -50,18 +50,19 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         size += 1;
     }
 
-    public void processResize(String mode) {
-       if (mode.equals("up"))  {
-           if (size == items.length) {
-               resize(items.length * 2);
-           }
-       } else if (items.length > 8){
+    private void processResize(String mode) {
+        if (mode.equals("up")) {
+            if (size == items.length) {
+                resize(items.length * 2);
+            }
+        } else if (items.length > 8) {
             double num = (double) size / items.length;
-           if (num <= 0.25) {
-               resize(items.length / 2);
-           }
-       }
+            if (num <= 0.25) {
+                resize(items.length / 2);
+            }
+        }
     }
+
     @Override
     public void addLast(T item) {
         processResize("up");
@@ -70,7 +71,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         size += 1;
     }
 
-    public void resize(int opacity) {
+    private void resize(int opacity) {
         T[] newItems = (T[]) new Object[opacity];
         for (int i = 0; i < size; i += 1) {
             int p = (nextPrev += 1) % items.length;
@@ -90,9 +91,6 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return items[(nextPrev + i + 1) % items.length];
     }
 
-    public int getCapacity() {
-        return items.length;
-    }
     @Override
     public int size() {
         return size;
@@ -127,6 +125,7 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         processResize("down");
         return temp;
     }
+
     public boolean equals(Object o) {
         if (o instanceof Deque) {
             if (size != ((Deque<?>) o).size()) {

@@ -121,19 +121,19 @@ public class ArrayDequeTest {
         }
     }
 
-    @Test
-    public void testResize() {
-        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
-        for (int i = 0; i < 9; i++) {
-            lld1.addLast(i);
-        }
-        assertEquals("the capacity should be 16", 16, (double) lld1.getCapacity(), 0.0);
-        for (int i = 0; i < 5; i++) {
-            lld1.removeLast();
-        }
-        assertEquals("the capacity should be 8", 8, (double) lld1.getCapacity(), 0.0);
-
-    }
+//    @Test
+//    public void testResize() {
+//        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+//        for (int i = 0; i < 9; i++) {
+//            lld1.addLast(i);
+//        }
+//        assertEquals("the capacity should be 16", 16, (double) lld1.getCapacity(), 0.0);
+//        for (int i = 0; i < 5; i++) {
+//            lld1.removeLast();
+//        }
+//        assertEquals("the capacity should be 8", 8, (double) lld1.getCapacity(), 0.0);
+//
+//    }
 
     @Test
     public void testEequals() {
