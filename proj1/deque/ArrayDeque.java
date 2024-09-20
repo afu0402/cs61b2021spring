@@ -39,9 +39,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
 
     @Override
     public void addFirst(T item) {
-        if (size == items.length) {
-            resize(items.length * 2);
-        }
+        processResize("up");
+        items[nextLast] = item;
         items[nextPrev] = item;
         if (nextPrev == 0) {
             nextPrev = items.length - 1;
@@ -51,11 +50,21 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         size += 1;
     }
 
+    public void processResize(String mode) {
+       if (mode.equals("up"))  {
+           if (size == items.length) {
+               resize(items.length * 2);
+           }
+       } else {
+            double num = (double) size / items.length;
+           if (num <= 0.25) {
+               resize(items.length / 2);
+           }
+       }
+    }
     @Override
     public void addLast(T item) {
-        if (size == items.length) {
-            resize(items.length * 2);
-        }
+        processResize("up");
         items[nextLast] = item;
         nextLast = (nextLast + 1) % items.length;
         size += 1;
@@ -81,6 +90,9 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         return items[(nextPrev + i + 1) % items.length];
     }
 
+    public int getCapacity() {
+        return items.length;
+    }
     @Override
     public int size() {
         return size;
@@ -93,6 +105,8 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         T temp = items[nextPrev];
         items[nextPrev] = null;
         size -= 1;
+        processResize("down");
+
         return temp;
     }
 
@@ -110,8 +124,33 @@ public class ArrayDeque<T> implements Deque<T>, Iterable<T> {
         T temp = items[nextLast];
         items[nextLast] = null;
         size -= 1;
+        processResize("down");
         return temp;
     }
+    public boolean equals(Object o) {
+        if (o instanceof Deque) {
+            if (size != ((Deque<?>) o).size()) {
+                return false;
+            }
+            for (int i = 0; i < size; i += 1) {
+                T item = get(i);
+                if (!(item.equals(((Deque<?>) o).get(i)))) {
 
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 
+//    public static void main(String[] args) {
+//        ArrayDeque<String> a = new ArrayDeque();
+//        LinkedListDeque<String> b = new LinkedListDeque<>();
+//        a.addLast("a");
+//        a.addLast("b");
+//        b.addLast("b");
+//        b.addLast("a");
+//        System.out.println(a.equals(b));
+//    }
 }

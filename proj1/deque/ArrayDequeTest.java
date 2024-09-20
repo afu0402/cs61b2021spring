@@ -118,4 +118,33 @@ public class ArrayDequeTest {
             assertEquals("Should have the same value", i, (double) lld1.removeLast(), 0.0);
         }
     }
+    @Test
+    public void testResize() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        for (int i = 0; i < 9; i++) {
+            lld1.addLast(i);
+        }
+        assertEquals("the capacity should be 16", 16, (double) lld1.getCapacity(), 0.0);
+        for (int i = 0; i <5 ; i++) {
+            lld1.removeLast();
+        }
+        assertEquals("the capacity should be 8", 8, (double) lld1.getCapacity(), 0.0);
+
+    }
+@Test
+    public void testEequals() {
+
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        LinkedListDeque<Integer> l2 = new LinkedListDeque<>();
+        LinkedListDeque<String> l3 = new LinkedListDeque<>();
+        lld1.addFirst(1);
+        lld1.addFirst(2);
+        l2.addFirst(1);
+        l2.addFirst(2);
+        l3.addFirst("a");
+        l3.addFirst("b");
+        assertEquals("lld1 should equals to l2", true,lld1.equals(l2));
+        assertEquals("lld1 should not equals to l3", false,lld1.equals(l3));
+
+    }
 }
