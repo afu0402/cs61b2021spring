@@ -2,13 +2,34 @@ package deque;
 
 import com.sun.tools.doclets.internal.toolkit.util.links.LinkInfo;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class LinkedListDeque<T> implements Deque<T> {
+public class LinkedListDeque<T> implements Deque<T>,Iterable<T> {
 
-    private ListNode node;
     private ListNode sentinel;
     private int size;
+    private class LinkedListIterator implements Iterator<T> {
+        private ListNode node;
+
+        LinkedListIterator() {
+            node = sentinel;
+        }
+        @Override
+        public boolean hasNext() {
+            return node.next != sentinel;
+        }
+
+        @Override
+        public T next() {
+            ListNode current = node.next;
+            node = current;
+            return current.item;
+        }
+    }
+    public Iterator<T> iterator() {
+        return new LinkedListIterator();
+    }
 
     public LinkedListDeque() {
         sentinel = new ListNode(null);
@@ -37,6 +58,9 @@ public class LinkedListDeque<T> implements Deque<T> {
         }
     }
 
+
+
+    @Override
     public void addFirst(T item) {
         ListNode node = new ListNode(item);
         ListNode firstNode = sentinel.next;
@@ -47,6 +71,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         size += 1;
     }
 
+    @Override
     public void addLast(T item) {
         ListNode newNode = new ListNode(item);
         ListNode lastNode = sentinel.prev;
@@ -57,6 +82,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         size += 1;
     }
 
+    @Override
     public void printDeque() {
         ListNode p = sentinel.next;
         String s = "";
@@ -71,11 +97,13 @@ public class LinkedListDeque<T> implements Deque<T> {
         System.out.println(s);
     }
 
+    @Override
     public int size() {
         return size;
     }
 
 
+    @Override
     public T removeFirst() {
         ListNode firstItem = sentinel.next;
         if (firstItem != sentinel) {
@@ -90,6 +118,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         return null;
     }
 
+    @Override
     public T removeLast() {
         ListNode lastNode = sentinel.prev;
         if (lastNode != sentinel) {
@@ -104,6 +133,7 @@ public class LinkedListDeque<T> implements Deque<T> {
         return null;
     }
 
+    @Override
     public T get(int index) {
         ListNode p = sentinel.next;
         if (index < 0 || index >= size) {
