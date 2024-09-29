@@ -6,14 +6,14 @@ import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 
-public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
+public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     private class Node {
         private Node left;
         private Node right;
-        private Key key;
+        private K key;
         private V val;
         private int size = 0;
-        public Node(Key key, V val,int size) {
+        public Node(K key, V val,int size) {
             this.key = key;
             this.val = val;
             this.size = size;
@@ -26,10 +26,10 @@ public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
     }
 
     @Override
-    public boolean containsKey(Key key) {
+    public boolean containsKey(K key) {
         return containsKey(root,key);
     }
-    public boolean containsKey(Node x,Key key) {
+    public boolean containsKey(Node x,K key) {
         if (x == null) return false;
         int cmp = key.compareTo(x.key);
         if (cmp < 0) {
@@ -41,10 +41,10 @@ public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
     }
 
     @Override
-    public V get(Key key) {
+    public V get(K key) {
         return get(root,key);
     }
-    private V get(Node x,Key key)  {
+    private V get(Node x,K key)  {
         if (x == null) return null;
         int cmp = key.compareTo(x.key);
         if (cmp < 0) {
@@ -65,11 +65,11 @@ public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
     }
 
     @Override
-    public void put(Key key, V val) {
+    public void put(K key, V val) {
         root = put(root,key,val);
     }
 
-    public Node put(Node x,Key key, V val) {
+    public Node put(Node x,K key, V val) {
         if (x == null) return new Node(key,val,1);
         int cmp = key.compareTo(x.key);
         if (cmp < 0) {
@@ -84,7 +84,7 @@ public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
     }
     @Override
     public Set keySet() {
-        Set<Key> a = new HashSet<>();
+        Set<K> a = new HashSet<>();
         keySet(a,root);
         return a;
     }
@@ -96,14 +96,14 @@ public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
     }
 
     @Override
-    public V remove(Key key) {
+    public V remove(K key) {
         V targetV = get(key);
         if (targetV != null) {
             root = remove(root,key);
         }
         return targetV;
     }
-    private Node remove(Node x,Key key) {
+    private Node remove(Node x,K key) {
         if (x == null) return null;
         int cmp = key.compareTo(x.key);
         if (cmp < 0) {
@@ -127,7 +127,7 @@ public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
         return min(x.left);
     }
     @Override
-    public V remove(Key key, V value) {
+    public V remove(K key, V value) {
         V targetV = get(key);
         if (targetV != null) {
             if (targetV.equals(value)) {
@@ -147,7 +147,7 @@ public class BSTMap<Key extends Comparable<Key>, V> implements Map61B<Key, V> {
         printMapInOrder(x.right);
     }
     @Override
-    public Iterator<Key> iterator() {
+    public Iterator<K> iterator() {
         return keySet().iterator();
     }
 
